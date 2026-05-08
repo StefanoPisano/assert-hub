@@ -3,48 +3,181 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assert Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: {
+              DEFAULT: '#ffca28',
+              dark: '#ffca28',
+              light: '#2563eb', // Better blue for light mode
+            },
+            'card-bg': {
+              dark: '#1e293b', // Slate 800
+              light: '#ffffff',
+            },
+            'card-border': {
+              dark: 'rgba(255, 255, 255, 0.1)',
+              light: 'rgba(0, 0, 0, 0.05)',
+            },
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+          backgroundImage: {
+            'main-gradient-dark': 'linear-gradient(135deg, #0f172a, #1e293b)', // Almost black
+            'main-gradient-light': 'linear-gradient(135deg, #f8fafc, #f1f5f9)', // Almost white
+          },
+          animation: {
+            fadeIn: 'fadeIn 0.5s ease forwards',
+            slideIn: 'slideIn 0.4s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              'to': { opacity: '1' },
+            },
+            slideIn: {
+              'from': { transform: 'translateY(-20px)', opacity: '0' },
+              'to': { transform: 'translateY(0)', opacity: '1' },
+            },
+          },
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .backdrop-blur-10 {
+        backdrop-filter: blur(10px);
+      }
+    }
+    body {
+      @apply bg-main-gradient-light dark:bg-main-gradient-dark bg-fixed dark:text-slate-50 text-slate-900 font-inter min-h-screen flex flex-col items-center transition-colors duration-500;
+    }
+    h1 {
+      @apply mt-8 text-3xl font-bold dark:text-accent-dark text-accent-light;
+    }
+    .upload-area {
+      @apply my-8 p-8 border-2 border-dashed dark:border-accent-dark border-accent-light rounded-xl text-center cursor-pointer transition-all duration-300 w-[90%] max-w-[600px] dark:hover:bg-white/5 hover:bg-black/5;
+    }
+    .test-card {
+      @apply dark:bg-card-bg-dark bg-card-bg-light rounded-xl my-4 w-full shadow-xl dark:border-card-border-dark border-card-border-light overflow-hidden animate-fadeIn opacity-0 transition-all duration-300;
+    }
+    .test-header {
+      @apply flex items-center px-6 py-4 dark:bg-black/20 bg-black/5 border-b dark:border-card-border-dark border-card-border-light cursor-pointer select-none transition-all duration-300;
+    }
+    .test-card.collapsed .test-header {
+      @apply border-b-0;
+    }
+    .test-header-arrow {
+      @apply mr-3 text-[0.8rem] transition-transform duration-300 opacity-70;
+    }
+    .test-card.collapsed .test-header-arrow {
+      @apply -rotate-90;
+    }
+    .test-card-content {
+      @apply p-6 pt-4 transition-all duration-300;
+    }
+    .test-card.collapsed .test-card-content,
+    .test-card.collapsed .progress-container {
+      @apply hidden;
+    }
+    .test-status {
+      @apply ml-auto px-3 py-1 rounded-full text-[0.8rem] font-bold uppercase dark:bg-white/10 bg-black/5 border dark:border-card-border-dark border-card-border-light;
+    }
+    .status-pass { @apply bg-[#2e7d32] text-white border-[#1b5e20]; }
+    .status-fail { @apply bg-[#c62828] text-white border-[#b71c1c]; }
+    .status-feedback { @apply bg-[#f57c00] text-white border-[#e65100]; }
+    .status-pending { @apply bg-[#616161] text-white border-[#424242]; }
+
+    .progress-container {
+      @apply h-2 dark:bg-white/10 bg-black/10 rounded-md overflow-hidden flex mx-6 my-4;
+    }
+    .progress-segment {
+      @apply h-full transition-all duration-300;
+    }
+    .status-btn {
+      @apply px-3 py-1 rounded border dark:border-card-border-dark border-card-border-light bg-transparent dark:text-slate-300 text-slate-600 cursor-pointer text-[0.75rem] transition-all duration-300 hover:bg-white/10 dark:hover:bg-white/10 hover:bg-black/5;
+    }
+    .status-btn.active.pass { @apply bg-[#2e7d32] border-[#1b5e20] text-white; }
+    .status-btn.active.fail { @apply bg-[#c62828] border-[#b71c1c] text-white; }
+    .status-btn.active.feedback { @apply bg-[#f57c00] border-[#e65100] text-white; }
+
+    .validation-error {
+      @apply dark:bg-red-900/20 bg-red-50 border-2 border-red-600 rounded-xl p-6 my-4 w-full animate-slideIn shadow-lg;
+    }
+    .validation-error h3 {
+      @apply text-red-600 dark:text-red-400 mt-0 flex items-center gap-2 text-lg font-bold;
+    }
+    .validation-error ul {
+      @apply list-disc pl-6 m-0;
+    }
+    .validation-error li {
+      @apply my-1.5 dark:text-slate-200 text-slate-800 font-medium;
+    }
+  </style>
+  <script>
+    // Initialize theme
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.theme = isDark ? 'dark' : 'light';
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
-  <div id="globalProgress" style="display: none;">
-    <div class="global-info">
+  <button onclick="toggleTheme()" class="fixed top-4 right-4 z-[110] p-2 rounded-full bg-white/10 backdrop-blur-md border border-card-border-light dark:border-card-border-dark hover:bg-white/20 transition-all duration-300" title="Toggle Light/Dark Mode">
+    <span class="dark:hidden">🌙</span>
+    <span class="hidden dark:inline">☀️</span>
+  </button>
+  <div id="globalProgress" class="sticky top-0 z-[100] dark:bg-main-gradient-dark/80 bg-main-gradient-light/80 backdrop-blur-10 w-full py-4 flex flex-col items-center shadow-lg" style="display: none;">
+    <div class="w-[90%] max-w-[800px] flex justify-between mb-2 text-[0.85rem] font-semibold dark:text-text-primary-dark text-text-primary-light">
       <span>Check Progress: <span id="globalStats">Pass: 0 | Fail: 0 | Feedback: 0 | Pending: 0</span></span>
       <span>Test Progress: <span id="testStats">Passed: 0 | Failed: 0 | Feedback: 0 | Total: 0</span></span>
     </div>
-    <div class="progress-container" style="width: 90%; max-width: 800px; margin: 0;">
-      <div class="progress-segment pass" id="globalPass" style="width: 0%"></div>
-      <div class="progress-segment fail" id="globalFail" style="width: 0%"></div>
-      <div class="progress-segment feedback" id="globalFeedback" style="width: 0%"></div>
-      <div class="progress-segment pending" id="globalPending" style="width: 100%"></div>
+    <div class="progress-container w-[90%] max-w-[800px]">
+      <div class="progress-segment pass bg-[#2e7d32]" id="globalPass" style="width: 0%"></div>
+      <div class="progress-segment fail bg-[#c62828]" id="globalFail" style="width: 0%"></div>
+      <div class="progress-segment feedback bg-[#f57c00]" id="globalFeedback" style="width: 0%"></div>
+      <div class="progress-segment pending bg-white/20" id="globalPending" style="width: 100%"></div>
     </div>
   </div>
   <h1>🧪 Assert Hub</h1>
   <a href="rules.html"
-    style="color: #fff; text-decoration: none; opacity: 0.7; font-size: 0.9rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.3);">📖
+    class="dark:text-white/70 text-slate-600 no-underline text-[0.9rem] mb-4 border-b dark:border-white/30 border-slate-300 transition-colors duration-300 hover:text-accent-light dark:hover:text-accent-dark">📖
     How to create a valid MD file?</a>
   <div class="upload-area" id="uploadArea">
     Click or drag‑and‑drop a Markdown file here<br />
-    <input type="file" id="fileInput" accept=".md,text/markdown" />
+    <input type="file" id="fileInput" class="hidden" accept=".md,text/markdown" />
   </div>
-  <div id="exportContainer" style="margin-bottom: 2rem; display: none; gap: 1rem;">
-    <button class="status-btn" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;" id="exportBtn">Download Results
+  <div id="exportContainer" class="mb-8 hidden gap-4">
+    <button class="status-btn !px-5 !py-2.5 !text-[0.9rem]" id="exportBtn">Download Results
       (.md)</button>
   </div>
-  <div id="results"></div>
-  <div id="exportContainerBottom" style="margin-bottom: 2rem; display: none; justify-content: center; width: 100%;">
-    <button class="status-btn" style="padding: 0.8rem 1.6rem; font-size: 1rem;" id="exportBtnBottom">Download Results
+  <div id="results" class="w-[90%] max-w-[800px] flex flex-col items-center"></div>
+  <div id="exportContainerBottom" class="mb-8 hidden justify-center w-full">
+    <button class="status-btn !px-6 !py-3 !text-[1rem]" id="exportBtnBottom">Download Results
       (.md)</button>
   </div>
-  <div class="footer">Built with vanilla HTML·CSS·JS – v1.2.0 – Created by <a href="https://stefanopisano.github.io"
-      style="color: var(--accent); text-decoration: none;">Stefano Pisano</a> ©
+  <div class="mt-auto p-4 text-[0.9rem] dark:opacity-70 text-slate-500 dark:text-slate-400 text-center">Built with vanilla HTML·JS & Tailwind CSS – v1.2.0 – Created by <a href="https://stefanopisano.github.io"
+      class="dark:text-accent-dark text-accent-light no-underline font-bold">Stefano Pisano</a> ©
     <script>document.write(new Date().getFullYear())</script>
-    <br>Licensed under <a href="LICENSE" style="color: var(--accent); text-decoration: none;">GPLv3</a>
+    <br>Licensed under <a href="LICENSE" class="dark:text-accent-dark text-accent-light no-underline font-bold">GPLv3</a>
   </div>
   <script src="script.js"></script>
 </body>

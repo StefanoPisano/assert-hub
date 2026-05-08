@@ -342,23 +342,15 @@ function renderTests(data) {
   if (Object.keys(metadata).length > 0) {
     const metaCard = document.createElement('div');
     metaCard.className = 'test-card';
-    metaCard.style.borderTop = '4px solid var(--accent)';
-    metaCard.style.background = 'rgba(255, 255, 255, 0.05)';
+    metaCard.style.borderTop = '4px solid #ffca28';
     
     const metaTitle = document.createElement('h2');
-    metaTitle.style.margin = '0';
-    metaTitle.style.padding = '1.5rem 1.5rem 0.5rem 1.5rem';
-    metaTitle.style.color = 'var(--accent)';
+    metaTitle.className = 'text-accent text-xl font-bold p-6 pb-2';
     metaTitle.textContent = metadata.name || 'Test Suite';
     metaCard.appendChild(metaTitle);
 
     const metaGrid = document.createElement('div');
-    metaGrid.style.display = 'grid';
-    metaGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
-    metaGrid.style.gap = '1rem';
-    metaGrid.style.padding = '1rem 1.5rem 1.5rem 1.5rem';
-    metaGrid.style.fontSize = '0.9rem';
-    metaGrid.style.opacity = '0.9';
+    metaGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 pt-2 text-[0.9rem] opacity-90';
 
     const fields = [
       { key: 'author', label: '👤 Author' },
@@ -384,23 +376,32 @@ function renderTests(data) {
   if (preconditions.length > 0) {
     const preCard = document.createElement('div');
     preCard.className = 'test-card';
-    preCard.style.borderLeft = '4px solid var(--accent)';
+    preCard.style.borderLeft = '4px solid #ffca28';
     
     const preHeader = document.createElement('div');
     preHeader.className = 'test-header';
+    preHeader.innerHTML = '<span class="test-header-arrow">▼</span>';
     const preTitle = document.createElement('h3');
+    preTitle.className = 'text-accent font-semibold';
     preTitle.textContent = '📋 Preconditions';
     preHeader.appendChild(preTitle);
     preCard.appendChild(preHeader);
 
+    const preContent = document.createElement('div');
+    preContent.className = 'test-card-content';
     const preUl = document.createElement('ul');
+    preUl.className = 'list-disc pl-5 space-y-1';
     preconditions.forEach(p => {
       const li = document.createElement('li');
-      li.style.display = 'block';
+      li.className = 'block';
       li.innerHTML = `- ` + formatMarkdown(p);
       preUl.appendChild(li);
     });
-    preCard.appendChild(preUl);
+    preContent.appendChild(preUl);
+    preCard.appendChild(preContent);
+
+    preHeader.onclick = () => preCard.classList.toggle('collapsed');
+
     resultsDiv.appendChild(preCard);
   }
 
@@ -411,14 +412,15 @@ function renderTests(data) {
     
     const header = document.createElement('div');
     header.className = 'test-header';
+    header.innerHTML = '<span class="test-header-arrow">▼</span>';
     
     header.onclick = (e) => {
-      // Don't toggle if clicking a button or something interactive inside header (if any)
       if (e.target.closest('button')) return;
       card.classList.toggle('collapsed');
     };
 
     const title = document.createElement('h3');
+    title.className = 'font-semibold text-accent';
     title.textContent = test.title;
     header.appendChild(title);
 
@@ -433,31 +435,37 @@ function renderTests(data) {
     const cardProgress = document.createElement('div');
     cardProgress.className = 'progress-container';
     cardProgress.innerHTML = `
-      <div class="progress-segment pass" style="width: 0%"></div>
-      <div class="progress-segment fail" style="width: 0%"></div>
-      <div class="progress-segment feedback" style="width: 0%"></div>
-      <div class="progress-segment pending" style="width: 100%"></div>
+      <div class="progress-segment pass bg-[#2e7d32]" style="width: 0%"></div>
+      <div class="progress-segment fail bg-[#c62828]" style="width: 0%"></div>
+      <div class="progress-segment feedback bg-[#f57c00]" style="width: 0%"></div>
+      <div class="progress-segment pending bg-white/20" style="width: 100%"></div>
     `;
     card.appendChild(cardProgress);
 
+    const stepsContainer = document.createElement('div');
+    stepsContainer.className = 'test-card-content';
     const stepsUl = document.createElement('ul');
+    stepsUl.className = 'space-y-4';
     test.steps.forEach((step, stepIndex) => {
       const stepLi = document.createElement('li');
+      stepLi.className = 'flex flex-col';
       const stepContainer = document.createElement('div');
-      stepContainer.style.width = '100%';
+      stepContainer.className = 'w-full';
 
       const stepSpan = document.createElement('span');
+      stepSpan.className = 'font-semibold mb-2 block';
       stepSpan.innerHTML = `${stepIndex + 1}. ` + formatMarkdown(step.text);
       stepContainer.appendChild(stepSpan);
 
       if (step.checks && step.checks.length) {
         const checkUl = document.createElement('ul');
+        checkUl.className = 'space-y-2 mt-2 ml-4';
         step.checks.forEach(check => {
           const checkLi = document.createElement('li');
-          checkLi.className = 'check-item';
+          checkLi.className = 'check-item flex items-start w-full';
           
           const statusGroup = document.createElement('div');
-          statusGroup.className = 'status-group';
+          statusGroup.className = 'flex gap-2 mr-4 mt-1';
           
           const passBtn = document.createElement('button');
           passBtn.className = 'status-btn pass';
@@ -513,7 +521,8 @@ function renderTests(data) {
       stepLi.appendChild(stepContainer);
       stepsUl.appendChild(stepLi);
     });
-    card.appendChild(stepsUl);
+    stepsContainer.appendChild(stepsUl);
+    card.appendChild(stepsContainer);
     resultsDiv.appendChild(card);
     updateCardStatus(card);
   });

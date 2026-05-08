@@ -3,112 +3,103 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Documentation - Assert Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-gradient: linear-gradient(135deg, #1e3c72, #2a5298);
-      --card-bg: rgba(255, 255, 255, 0.12);
-      --text-primary: #ffffff;
-      --accent: #ffca28;
-      --radius: 12px;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: {
+              DEFAULT: '#ffca28',
+              dark: '#ffca28',
+              light: '#2563eb',
+            },
+            'card-bg': {
+              dark: '#1e293b',
+              light: '#ffffff',
+            },
+            'card-border': {
+              dark: 'rgba(255, 255, 255, 0.1)',
+              light: 'rgba(0, 0, 0, 0.05)',
+            },
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+          backgroundImage: {
+            'main-gradient-dark': 'linear-gradient(135deg, #0f172a, #1e293b)',
+            'main-gradient-light': 'linear-gradient(135deg, #f8fafc, #f1f5f9)',
+          },
+        }
+      }
     }
-
+  </script>
+  <style type="text/tailwindcss">
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: var(--bg-gradient);
-      color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 2rem;
+      @apply bg-main-gradient-light dark:bg-main-gradient-dark bg-fixed dark:text-slate-50 text-slate-900 font-inter min-h-screen flex flex-col items-center p-8 transition-colors duration-500;
     }
-
     .container {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      width: 90%;
-      max-width: 800px;
-      box-shadow: var(--shadow);
+      @apply dark:bg-card-bg-dark bg-card-bg-light rounded-xl p-10 w-[90%] max-w-[800px] shadow-2xl transition-all duration-300;
     }
-
     h1 {
-      margin-top: 0;
-      color: var(--accent);
+      @apply mt-0 dark:text-accent-dark text-accent-light text-4xl font-extrabold;
     }
-
     h2 {
-      margin-top: 2rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      padding-bottom: 0.5rem;
+      @apply mt-10 text-2xl font-bold border-b dark:border-white/10 border-black/5 pb-2 dark:text-slate-100 text-slate-800;
     }
-
     code {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-family: 'Courier New', Courier, monospace;
-      color: var(--accent);
+      @apply dark:bg-black/40 bg-black/5 px-1.5 py-0.5 rounded font-mono dark:text-accent-dark text-accent-light;
     }
-
     pre {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 1rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      @apply dark:bg-black/60 bg-black/5 p-5 rounded-xl overflow-x-auto border dark:border-white/10 border-black/5 my-6;
     }
-
     .back-link {
-      margin-top: 2rem;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      opacity: 0.8;
-      transition: 0.3s;
+      @apply mt-10 dark:text-slate-300 text-slate-600 no-underline font-bold opacity-80 transition-all duration-300 hover:opacity-100 hover:underline hover:text-accent-light dark:hover:text-accent-dark;
     }
-
-    .back-link:hover {
-      opacity: 1;
-      text-decoration: underline;
-    }
-
     ul {
-      line-height: 1.6;
+      @apply list-disc pl-6 leading-relaxed space-y-2;
     }
-
     li {
-      margin-bottom: 0.5rem;
-    }
-
-    .example-box {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-left: 4px solid var(--accent);
+      @apply mb-2;
     }
   </style>
+  <script>
+    // Initialize theme
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.theme = isDark ? 'dark' : 'light';
+    }
+  </script>
 </head>
 
 <body>
+  <button onclick="toggleTheme()" class="fixed top-4 right-4 z-[110] p-2 rounded-full bg-white/10 backdrop-blur-md border border-card-border-light dark:border-card-border-dark hover:bg-white/20 transition-all duration-300" title="Toggle Light/Dark Mode">
+    <span class="dark:hidden">🌙</span>
+    <span class="hidden dark:inline">☀️</span>
+  </button>
   <div class="container">
     <h1>📖 Markdown Formatting Rules</h1>
-    <p>To ensure your test cases are correctly parsed and displayed, please follow these structure rules.</p>
+    <p class="mb-6">To ensure your test cases are correctly parsed and displayed, please follow these structure rules.</p>
 
     <h2>1. Metadata Tags</h2>
-    <p>Metadata tags provide high-level information about the test suite. They appear in a dedicated header card at the
+    <p class="mb-4">Metadata tags provide high-level information about the test suite. They appear in a dedicated header card at the
       top.</p>
-    <div style="background: rgba(255, 202, 40, 0.1); border-left: 4px solid var(--accent); padding: 1rem; margin-bottom: 1.5rem;">
+    <div class="bg-accent/10 border-l-4 border-accent p-4 mb-6">
       <strong>⚠️ Mandatory Tags:</strong> <code>--name</code>, <code>--author</code>, <code>--version</code> are required for the file to be processed.
     </div>
-    <ul>
+    <ul class="mb-6">
       <li><strong>Mandatory:</strong> <code>--name</code>, <code>--author</code>, <code>--version</code></li>
       <li>Optional: <code>--description</code>, <code>--date</code></li>
       <li>Example:
@@ -122,9 +113,9 @@
     </ul>
 
     <h2>2. Preconditions</h2>
-    <p>Preconditions are informational items that apply to all tests. They appear in a special highlighted card at the
+    <p class="mb-4">Preconditions are informational items that apply to all tests. They appear in a special highlighted card at the
       very top of the list.</p>
-    <ul>
+    <ul class="mb-6">
       <li>Format: Use <code>### [Preconditions]</code> or <code>**Preconditions**</code> as a header, followed by a
         bulleted list.</li>
       <li>Example:
@@ -136,40 +127,40 @@
     </ul>
 
     <h2>2. Test Case Header</h2>
-    <p>Every test must start with a level 3 heading (<code>###</code>) containing the <code>[Test]</code> keyword. You
+    <p class="mb-4">Every test must start with a level 3 heading (<code>###</code>) containing the <code>[Test]</code> keyword. You
       can optionally include a test number and a description.</p>
-    <ul>
+    <ul class="mb-6">
       <li>Format: <code>### [Test n - Description]</code></li>
       <li>Example: <code>### [Test 1 - Login Functionality]</code></li>
     </ul>
 
     <h2>2. Steps</h2>
-    <p>Steps define the actions to be taken. They should be bullet points starting with the <code>[Step]</code> keyword.
+    <p class="mb-4">Steps define the actions to be taken. They should be bullet points starting with the <code>[Step]</code> keyword.
     </p>
-    <ul>
+    <ul class="mb-6">
       <li>Format: <code>- [Step] Description of the step</code></li>
       <li>Example: <code>- [Step] Enter username and password</code></li>
     </ul>
 
     <h2>3. Checks (Expected Results)</h2>
-    <p>Checks define what needs to be verified after a step. They must be nested under a step and start with the
+    <p class="mb-4">Checks define what needs to be verified after a step. They must be nested under a step and start with the
       <code>[Check]</code> keyword.</p>
-    <ul>
+    <ul class="mb-6">
       <li>Format: <code>  - [Check] What to verify</code></li>
       <li>Example: <code>  - [Check] The dashboard should be visible</code></li>
     </ul>
 
     <h2>4. Text Formatting</h2>
-    <p>You can use standard Markdown bold syntax to emphasize text within steps or checks.</p>
-    <ul>
+    <p class="mb-4">You can use standard Markdown bold syntax to emphasize text within steps or checks.</p>
+    <ul class="mb-6">
       <li>Syntax: <code>**text to be bold**</code></li>
       <li>Example: <code>- [Step] Click the **Submit** button</code></li>
     </ul>
 
     <h2>5. Status Markers (Importing Results)</h2>
-    <p>When importing a file that was previously exported, the tool looks for <code>[Pass]</code> or <code>[Fail]</code>
+    <p class="mb-4">When importing a file that was previously exported, the tool looks for <code>[Pass]</code> or <code>[Fail]</code>
       markers inside the checks.</p>
-    <ul>
+    <ul class="mb-6">
       <li>Format: <code>- [Check] [Pass] Description</code></li>
     </ul>
 
@@ -185,18 +176,18 @@
 - [Step] Click Login without entering data
   - [Check] An error message should appear
     </pre>
-    <div style="margin-top: 1.5rem; text-align: center;">
+    <div class="mt-6 text-center">
       <a href="examples/auth_suite.md" download
-        style="display: inline-block; background: var(--accent); color: #1e3c72; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: transform 0.2s;">📥
+        class="inline-block bg-accent text-[#1e3c72] px-6 py-3 rounded-lg no-underline font-bold transition-transform duration-200 hover:scale-105">📥
         Download Example File (.md)</a>
     </div>
   </div>
 
   <a href="index.html" class="back-link">← Back to Viewer</a>
 
-  <div style="margin-top: 2rem; opacity: 0.6; font-size: 0.8rem;">
-    Built with vanilla HTML·CSS·JS – Created by <a href="https://stefanopisano.github.io/"
-      style="color: var(--accent); text-decoration: none;">Stefano Pisano</a> © 2026
+  <div class="mt-8 dark:opacity-60 text-slate-500 dark:text-slate-400 text-xs text-center">
+    Built with vanilla HTML·JS & Tailwind CSS – Created by <a href="https://stefanopisano.github.io/"
+      class="dark:text-accent-dark text-accent-light no-underline font-bold">Stefano Pisano</a> © 2026
   </div>
 </body>
 
