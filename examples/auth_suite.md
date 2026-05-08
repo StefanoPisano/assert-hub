@@ -1,8 +1,9 @@
 --name Authentication & User Profile Suite
 --author Quality Assurance Team
---version 2.1.0
+--version 2.1.1
 --date 07/05/2026
 --description This suite verifies the core authentication flow, including login, multi-factor authentication, and profile management. It covers both success paths and error handling.
+--tags authentication, users
 
 ### [Preconditions]
 - The test environment is pointing to the **Staging Server**.

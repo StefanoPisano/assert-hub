@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Assert Hub</title>
+  <title>Assert.True - Markdown Test Suite Viewer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -66,7 +66,7 @@
       @apply bg-main-gradient-light dark:bg-main-gradient-dark bg-fixed dark:text-slate-50 text-slate-900 font-inter min-h-screen flex flex-col items-center transition-colors duration-500;
     }
     h1 {
-      @apply mt-8 text-3xl font-bold dark:text-accent-dark text-accent-light;
+      @apply mt-12 mb-6 text-5xl md:text-6xl font-extrabold dark:text-accent-dark text-accent-light tracking-tight drop-shadow-lg;
     }
     .upload-area {
       @apply my-8 p-8 border-2 border-dashed dark:border-accent-dark border-accent-light rounded-xl text-center cursor-pointer transition-all duration-300 w-[90%] max-w-[600px] dark:hover:bg-white/5 hover:bg-black/5;
@@ -173,13 +173,29 @@
       <div class="progress-segment pending bg-white/20" id="globalPending" style="width: 100%"></div>
     </div>
   </div>
-  <h1>🧪 Assert Hub</h1>
-  <a href="rules.html"
-    class="dark:text-white/70 text-slate-600 no-underline text-[0.9rem] mb-4 border-b dark:border-white/30 border-slate-300 transition-colors duration-300 hover:text-accent-light dark:hover:text-accent-dark">📖
-    How to create a valid MD file?</a>
+  <div id="homeLink" class="flex flex-col items-center cursor-pointer">
+    <h1>🧪 Assert.True</h1>
+  </div>
+  <div id="navigation" class="mb-4 flex flex-col items-center">
+    <a href="rules.html"
+      class="dark:text-white/70 text-slate-600 no-underline text-[0.9rem] border-b dark:border-white/30 border-slate-300 transition-colors duration-300 hover:text-accent-light dark:hover:text-accent-dark">📖
+      How to create a valid MD file?</a>
+    <button id="backBtn" class="status-btn mt-4 hidden">← Back to Upload</button>
+  </div>
   <div class="upload-area" id="uploadArea">
     Click or drag‑and‑drop a Markdown file here<br />
     <input type="file" id="fileInput" class="hidden" accept=".md,text/markdown" />
+  </div>
+  <div id="recentFilesContainer" class="w-[90%] max-w-[800px] mb-8 hidden">
+    <h2 class="text-xl font-bold mb-4 dark:text-accent-dark text-accent-light flex items-center gap-2">
+      <span>🕒</span> Recent Files
+    </h2>
+    <div id="tagFilters" class="flex flex-wrap gap-2 mb-6">
+      <!-- Tag chips will be injected here -->
+    </div>
+    <div id="recentFilesList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Recent files will be injected here -->
+    </div>
   </div>
   <div id="exportContainer" class="mb-8 hidden gap-3 flex-wrap justify-center">
     <button class="status-btn !px-4 !py-2 !text-[0.85rem]" id="exportBtn">Download Results (.md)</button>
@@ -197,7 +213,12 @@
     <script>document.write(new Date().getFullYear())</script>
     <br>Licensed under <a href="LICENSE" class="dark:text-accent-dark text-accent-light no-underline font-bold">GPLv3</a>
   </div>
-  <script src="script.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/exporter.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>
