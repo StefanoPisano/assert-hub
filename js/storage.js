@@ -81,8 +81,10 @@ window.AssertHub.RecentFilesManager = {
     const container = document.getElementById('recentFilesContainer');
     const list = document.getElementById('recentFilesList');
     const filtersContainer = document.getElementById('tagFilters');
+    const uploadArea = document.getElementById('uploadArea');
+    const isHomePage = !uploadArea || uploadArea.style.display !== 'none';
     
-    if (files.length === 0) {
+    if (files.length === 0 || !isHomePage) {
       container.style.display = 'none';
       return;
     }
